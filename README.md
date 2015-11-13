@@ -44,3 +44,9 @@ optional arguments:
                         Write output to FILE instead of stdout
 
 ```
+
+An example follows:
+
+```shell
+$ python crawler.py -d mydomain.com www.mydomain.com -u http://www.mydomain.com
+```
