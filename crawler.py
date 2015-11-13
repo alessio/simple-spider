@@ -2,6 +2,10 @@ from __future__ import print_function
 import argparse
 from collections import defaultdict
 from functools import partial
+from urlparse import (
+    urljoin,
+    urlparse,
+)
 import json
 import os
 import sys
@@ -23,16 +27,32 @@ class WebSpider(scrapy.Spider):
     """
     name = 'webspider'
     allowed_schemes = ("http", "https", "ftp")
+    xpath_pattern = (
+        '//img/@src | //script/@src | //a/@href |'
+        '//iframe/@src | //area/@src'
+    )
 
     def __init__(self, allowed_domains, start_urls, results, *args, **kw):
             super(WebSpider, self).__init__(*args, **kw)
             self.allowed_domains = allowed_domains
             self.start_urls = start_urls
             self.results = results
+            self.visited = set()
 
-    def parse(self):
-        # STUB
-        pass
+    def parse(self, response, **kwargs):
+        current_url = response.url
+        for link in response.xpath(self.xpath_pattern).extract():
+            link = urljoin(current_url, link)
+            link_parsed = urlparse(link)
+            if link_parsed.scheme in self.allowed_schemes:
+                if self.hostname_allowed(link_parsed.netloc):
+                    self.visited.add(link)
+                    self.results[current_url]['links'].add(link)
+                    yield scrapy.Request(
+                        link, callback=self.parse,
+                    )
+                else:
+                    self.results[current_url]['external'].add(link)
 
 
 def crawl(settings, start_urls, allowed_domains, output_document):
