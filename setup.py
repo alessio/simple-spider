@@ -9,4 +9,5 @@ setup(
         "Scrapy>=1.0.3",
     ],
     scripts=["crawler.py"],
+    test_suite="tests",
 )
