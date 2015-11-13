@@ -7,11 +7,36 @@ PROGNAME = os.path.basename(sys.argv[0])
 
 
 class WebSpider(scrapy.Spider):
-    pass
+    """
+    Scrape a webpage looking for 'a', 'area', 'img', and 'script' tags.
+
+    Handle the following schemes:
+     - http://
+     - https://
+     - ftp://
+    """
+    name = 'webspider'
+    allowed_schemes = ("http", "https", "ftp")
+
+    def __init__(self, allowed_domains, start_urls, results, *args, **kw):
+            super(WebSpider, self).__init__(*args, **kw)
+            self.allowed_domains = allowed_domains
+            self.start_urls = start_urls
+            self.results = results
+
+    def parse(self):
+        # STUB
+        pass
 
 
 def crawl(settings, start_urls, allowed_domains, output_document):
-    pass
+    # STUB
+    results = {}
+    WebSpider(
+        results=results,
+        allowed_domains=args.allowed_domains,
+        start_urls=args.start_urls,
+    )
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
