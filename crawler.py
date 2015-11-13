@@ -49,11 +49,11 @@ class WebSpider(scrapy.Spider):
     )
 
     def __init__(self, allowed_domains, start_urls, results, *args, **kw):
-            super(WebSpider, self).__init__(*args, **kw)
-            self.allowed_domains = allowed_domains
-            self.start_urls = start_urls
-            self.results = results
-            self.visited = set()
+        super(WebSpider, self).__init__(*args, **kw)
+        self.allowed_domains = allowed_domains
+        self.start_urls = start_urls
+        self.results = results
+        self.visited = set()
 
     def hostname_allowed(self, hostname):
         if hostname is not None:
