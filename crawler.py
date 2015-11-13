@@ -16,6 +16,22 @@ from scrapy.crawler import CrawlerProcess
 PROGNAME = os.path.basename(sys.argv[0])
 
 
+class JSONEncoder(json.JSONEncoder):
+    """
+    Extend json's default encoder to support the 'set' type.
+
+    'set' is Python-specific, thus JSON doesn't support it.
+    A common practice is to convert sets into lists, which are
+    natively supported by the the JSON specifications.
+    """
+
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        else:
+            return super(JSONEncoder, self).default(obj)
+
+
 class WebSpider(scrapy.Spider):
     """
     Scrape a webpage looking for 'a', 'area', 'img', and 'script' tags.
@@ -74,7 +90,8 @@ def crawl(settings, start_urls, allowed_domains, output_document):
         start_urls=args.start_urls,
     )
     process.start()
-    print(json.dumps(results), file=output_document)
+    print(json.dumps(results, cls=JSONEncoder), file=output_document)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
