@@ -1,8 +1,11 @@
 from __future__ import print_function
 import argparse
+from collections import defaultdict
+from functools import partial
 import json
 import os
 import sys
+
 import scrapy
 from scrapy.crawler import CrawlerProcess
 
@@ -37,7 +40,7 @@ def crawl(settings, start_urls, allowed_domains, output_document):
     Set up the crawlers as per client's parameters.
     Output's a JSON sitemap.
     """
-    results = {}
+    results = defaultdict(partial(defaultdict, set))
     process = CrawlerProcess(settings)
     process.crawl(
         WebSpider,
