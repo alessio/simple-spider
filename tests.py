@@ -47,12 +47,12 @@ class WebsiteStandardTest(TestCase):
             self.assertEqual(urlparse(child).netloc, self.domain)
 
     def test_external_outside_domain(self):
-        for link in self.pages["http://thisisglow.com/"]["external"]:
+        for link in self.results["http://thisisglow.com/"]["external"]:
             self.assertNotEqual(urlparse(link).netloc, self.domain)
 
     def test_external_not_visited(self):
         page = "http://thisisglow.com/managed-services/"
         external_page = "http://twitter.com/thisisglow"
 
-        self.assertIn(external_page, self.pages[page]["external"])
-        self.assertNotIn(external_page, self.pages)
+        self.assertIn(external_page, self.results[page]["external"])
+        self.assertNotIn(external_page, self.results)
