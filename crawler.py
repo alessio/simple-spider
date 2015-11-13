@@ -62,6 +62,10 @@ class WebSpider(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         current_url = response.url
+        if not hasattr(response, "xpath"):
+            parent = kwargs.get("parent")
+            self.results[parent]['links'].add(current_url)
+            return
         for link in response.xpath(self.xpath_pattern).extract():
             link = urljoin(current_url, link)
             link_parsed = urlparse(link)
@@ -70,7 +74,7 @@ class WebSpider(scrapy.Spider):
                     self.visited.add(link)
                     self.results[current_url]['links'].add(link)
                     yield scrapy.Request(
-                        link, callback=self.parse,
+                        link, callback=partial(self.parse, parent=current_url),
                     )
                 else:
                     self.results[current_url]['external'].add(link)
