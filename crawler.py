@@ -39,6 +39,11 @@ class WebSpider(scrapy.Spider):
             self.results = results
             self.visited = set()
 
+    def hostname_allowed(self, hostname):
+        if hostname is not None:
+            return any(hostname.endswith(ad) for ad in self.allowed_domains)
+        return False
+
     def parse(self, response, **kwargs):
         current_url = response.url
         for link in response.xpath(self.xpath_pattern).extract():
