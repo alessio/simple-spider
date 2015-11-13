@@ -1,7 +1,10 @@
+from __future__ import print_function
 import argparse
+import json
 import os
 import sys
 import scrapy
+from scrapy.crawler import CrawlerProcess
 
 PROGNAME = os.path.basename(sys.argv[0])
 
@@ -30,13 +33,20 @@ class WebSpider(scrapy.Spider):
 
 
 def crawl(settings, start_urls, allowed_domains, output_document):
-    # STUB
+    """
+    Set up the crawlers as per client's parameters.
+    Output's a JSON sitemap.
+    """
     results = {}
-    WebSpider(
+    process = CrawlerProcess(settings)
+    process.crawl(
+        WebSpider,
         results=results,
         allowed_domains=args.allowed_domains,
         start_urls=args.start_urls,
     )
+    process.start()
+    print(json.dumps(results), file=output_document)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
